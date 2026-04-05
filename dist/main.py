@@ -1,6 +1,16 @@
-import time
 import sys
+import time
+
 from rgbmatrix import RGBMatrix, RGBMatrixOptions
+
+from rows.weather_row import WeatherRow
+from weather import fetch_weather
+
+FETCH_INTERVAL = 300  # seconds
+
+# Load fonts before RGBMatrix init — the constructor drops privileges
+# from root to daemon, which blocks access to the home directory.
+weather_row = WeatherRow()
 
 options = RGBMatrixOptions()
 options.rows = 32
@@ -10,21 +20,24 @@ options.hardware_mapping = "adafruit-hat"
 options.gpio_slowdown = 2
 
 matrix = RGBMatrix(options=options)
+canvas = matrix.CreateFrameCanvas()
+
+weather = None
+last_fetch = 0
 
 try:
-    canvas = matrix.CreateFrameCanvas()
-
-    # RGB gradient: red->green horizontal, blue vertical
-    for x in range(64):
-        for y in range(32):
-            r = int(255 * (1 - x / 63))
-            g = int(255 * (x / 63))
-            b = int(255 * (y / 31))
-            canvas.SetPixel(x, y, r, g, b)
-    canvas = matrix.SwapOnVSync(canvas)
-
-    print("Gradient displayed. Ctrl+C to exit.")
     while True:
+        now = time.time()
+        if now - last_fetch >= FETCH_INTERVAL:
+            result = fetch_weather()
+            if result is not None:
+                weather = result
+            last_fetch = now
+
+        canvas.Clear()
+        weather_row.render(canvas, weather)
+        canvas = matrix.SwapOnVSync(canvas)
+
         time.sleep(1)
 
 except KeyboardInterrupt:
