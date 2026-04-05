@@ -27,5 +27,24 @@
 options.rows = 32
 options.cols = 64
 options.chain_length = 1
+options.hardware_mapping = "adafruit-hat"
 options.gpio_slowdown = 2
+```
+
+## RPi File Structure
+
+- Project path: `~/rpi-rgb-led-matrix/dist/main.py`
+
+## Usage
+
+Deploy `dist/main.py` to the panel and run it:
+
+```sh
+bash deploy.sh
+```
+
+Grab a camera snapshot to `/tmp/led-panel-snapshot.jpg` (requires `.env` with `TAPO_CAMERA_USER` and `TAPO_CAMERA_PASS`):
+
+```sh
+bash snapshot.sh
 ```
