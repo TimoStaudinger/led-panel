@@ -38,20 +38,20 @@ try:
             result = fetch_weather()
             if result is not None:
                 weather = result
-            last_weather_fetch = now
+                last_weather_fetch = now
 
         if now - last_subway_fetch >= SUBWAY_FETCH_INTERVAL:
             result = fetch_subway()
             if result is not None:
                 departures = result
-            last_subway_fetch = now
+                last_subway_fetch = now
 
         canvas.Clear()
         weather_row.render(canvas, weather)
         subway_row.render(canvas, departures)
         canvas = matrix.SwapOnVSync(canvas)
 
-        time.sleep(1)
+        time.sleep(5)
 
 except KeyboardInterrupt:
     sys.exit(0)

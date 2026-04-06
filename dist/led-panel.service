@@ -1,0 +1,15 @@
+[Unit]
+Description=LED Panel Display
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/timostaudinger/rpi-rgb-led-matrix/dist
+ExecStart=/usr/bin/python3 main.py
+Environment=TZ=America/New_York
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
